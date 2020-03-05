@@ -143,7 +143,32 @@ const searchRequests: Hapi.ServerRoute = {
   method: "GET",
   path: "/requests",
   handler: (request: Hapi.Request, h: Hapi.ResponseToolkit) => {
-    return testData;
+    const searchTerm = request.query.term;
+    const requestType = request.query.type;
+
+    console.log(requestType);
+
+    let response = testData;
+
+    if (typeof searchTerm === "string") {
+      response = response.filter((request: Request) => {
+        return (
+          request.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          request.description
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          request.id.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      });
+    }
+
+    if (typeof requestType === "string") {
+      response = response.filter((request: Request) => {
+        return request.type.toLowerCase() === requestType.toLowerCase();
+      });
+    }
+
+    return response;
   }
 };
 

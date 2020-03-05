@@ -20,7 +20,7 @@ import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
-import { SearchBox } from "./SearchBox";
+import { ContentFilter } from "./ContentFilter";
 
 const drawerWidth = "18%";
 
@@ -123,7 +123,7 @@ export const Content: FunctionComponent = () => {
 
           {open === true ? (
             <>
-              <SearchBox setRequests={setRequests} />
+              <ContentFilter setRequests={setRequests} />
             </>
           ) : (
             <></>
