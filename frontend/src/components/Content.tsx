@@ -21,6 +21,7 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 import { ContentFilter } from "./ContentFilter";
+import { NewRequest } from "./NewRequest";
 
 const drawerWidth = "18%";
 
@@ -87,29 +88,31 @@ type Request = {
 export const Content: FunctionComponent = () => {
   const classes = useStyles();
 
-  const [requests, setRequests] = React.useState<Request[]>([]);
-  const [open, setOpen] = React.useState(true);
+  const [requests, setRequests] = useState<Request[]>([]);
+  const [drawerOpen, setDrawerOpen] = useState(true);
+  const [requestOpen, setRequestOpen] = useState(false);
 
   const handleDrawerToggle = () => {
-    setOpen(!open);
+    setDrawerOpen(!drawerOpen);
   };
 
   const handleNewServiceClick = () => {
-    console.log("jee");
+    setRequestOpen(true);
   };
 
   return (
     <>
+      <NewRequest open={requestOpen} setOpen={setRequestOpen} />
       <Drawer
         variant="permanent"
         className={clsx(classes.drawer, {
-          [classes.drawerOpen]: open,
-          [classes.drawerClosed]: !open
+          [classes.drawerOpen]: drawerOpen,
+          [classes.drawerClosed]: !drawerOpen
         })}
         classes={{
           paper: clsx({
-            [classes.drawerOpen]: open,
-            [classes.drawerClosed]: !open
+            [classes.drawerOpen]: drawerOpen,
+            [classes.drawerClosed]: !drawerOpen
           })
         }}
       >
@@ -118,10 +121,10 @@ export const Content: FunctionComponent = () => {
             onClick={handleDrawerToggle}
             className={classes.drawerToggle}
           >
-            {open === true ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+            {drawerOpen === true ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
 
-          {open === true ? (
+          {drawerOpen === true ? (
             <>
               <ContentFilter setRequests={setRequests} />
             </>
@@ -134,7 +137,7 @@ export const Content: FunctionComponent = () => {
         container
         direction="column"
         className={clsx(classes.content, {
-          [classes.contentShift]: !open
+          [classes.contentShift]: !drawerOpen
         })}
       >
         <Grid
@@ -167,7 +170,7 @@ export const Content: FunctionComponent = () => {
         <TableContainer>
           <Table
             className={clsx(classes.table, {
-              [classes.tableShift]: !open
+              [classes.tableShift]: !drawerOpen
             })}
           >
             <TableHead>
