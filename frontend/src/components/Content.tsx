@@ -4,7 +4,6 @@ import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import {
   Typography,
   Grid,
-  Box,
   Drawer,
   IconButton,
   Button,
@@ -14,16 +13,25 @@ import {
   TableHead,
   TableCell,
   TableRow,
-  TableBody
+  TableBody,
+  TableFooter,
+  TablePagination
 } from "@material-ui/core";
+
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+
+import FirstPageIcon from "@material-ui/icons/FirstPage";
+import LastPageIcon from "@material-ui/icons/LastPage";
+import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
+import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 
 import { ContentFilter } from "./ContentFilter";
 import { NewRequest } from "./NewRequest";
 
 const drawerWidth = "18%";
+const rowsPerPage = 10;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -91,6 +99,11 @@ export const Content: FunctionComponent = () => {
   const [requests, setRequests] = useState<Request[]>([]);
   const [drawerOpen, setDrawerOpen] = useState(true);
   const [requestOpen, setRequestOpen] = useState(false);
+  const [page, setPage] = useState(0);
+  const [update, setUpdate] = useState(false);
+
+  const emptyRows =
+    rowsPerPage - Math.min(rowsPerPage, requests.length - page * rowsPerPage);
 
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen);
@@ -100,9 +113,71 @@ export const Content: FunctionComponent = () => {
     setRequestOpen(true);
   };
 
+  const handlePageChange = (event: any, newPage: number) => {
+    setPage(newPage);
+  };
+
+  interface PaginationProps {
+    count: number;
+    page: number;
+    rowsPerPage: number;
+    onChangePage: (
+      event: React.MouseEvent<HTMLButtonElement>,
+      newPage: number
+    ) => void;
+  }
+
+  const tableActionsComponent = (props: PaginationProps) => {
+    const { count, page, rowsPerPage, onChangePage } = props;
+
+    const handleFirstClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+      onChangePage(event, 0);
+    };
+
+    const handleLastClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+      onChangePage(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
+    };
+
+    const handleBackClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+      onChangePage(event, page - 1);
+    };
+
+    const handleForwardClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+      onChangePage(event, page + 1);
+    };
+
+    return (
+      <>
+        <IconButton onClick={handleFirstClick} disabled={page === 0}>
+          <FirstPageIcon />
+        </IconButton>
+        <IconButton onClick={handleBackClick} disabled={page === 0}>
+          <KeyboardArrowLeft />
+        </IconButton>
+        <IconButton
+          onClick={handleForwardClick}
+          disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+        >
+          <KeyboardArrowRight />
+        </IconButton>
+        <IconButton
+          onClick={handleLastClick}
+          disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+        >
+          <LastPageIcon />
+        </IconButton>
+      </>
+    );
+  };
+
   return (
     <>
-      <NewRequest open={requestOpen} setOpen={setRequestOpen} />
+      <NewRequest
+        open={requestOpen}
+        setOpen={setRequestOpen}
+        update={update}
+        setUpdate={setUpdate}
+      />
       <Drawer
         variant="permanent"
         className={clsx(classes.drawer, {
@@ -126,7 +201,7 @@ export const Content: FunctionComponent = () => {
 
           {drawerOpen === true ? (
             <>
-              <ContentFilter setRequests={setRequests} />
+              <ContentFilter setRequests={setRequests} update={update} />
             </>
           ) : (
             <></>
@@ -185,18 +260,37 @@ export const Content: FunctionComponent = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {requests.map((request: Request) => (
-                <TableRow key={request.id}>
-                  <TableCell>{request.created}</TableCell>
-                  <TableCell>{request.name}</TableCell>
-                  <TableCell>{request.type}</TableCell>
-                  <TableCell>{request.id}</TableCell>
-                  <TableCell>{request.description}</TableCell>
-                  <TableCell>{request.priority}</TableCell>
-                  <TableCell>{request.status}</TableCell>
+              {requests
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((request: Request) => (
+                  <TableRow key={request.id}>
+                    <TableCell>{request.created}</TableCell>
+                    <TableCell>{request.name}</TableCell>
+                    <TableCell>{request.type}</TableCell>
+                    <TableCell>{request.id}</TableCell>
+                    <TableCell>{request.description}</TableCell>
+                    <TableCell>{request.priority}</TableCell>
+                    <TableCell>{request.status}</TableCell>
+                  </TableRow>
+                ))}
+              {emptyRows > 0 && (
+                <TableRow style={{ height: 53 * emptyRows }}>
+                  <TableCell colSpan={6} />
                 </TableRow>
-              ))}
+              )}
             </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TablePagination
+                  rowsPerPageOptions={[10]}
+                  count={requests.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onChangePage={handlePageChange}
+                  ActionsComponent={tableActionsComponent}
+                />
+              </TableRow>
+            </TableFooter>
           </Table>
         </TableContainer>
       </Grid>
