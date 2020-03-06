@@ -83,7 +83,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-type Request = {
+export type Request = {
   created: Date;
   name: string;
   type: string;
@@ -201,7 +201,11 @@ export const Content: FunctionComponent = () => {
 
           {drawerOpen === true ? (
             <>
-              <ContentFilter setRequests={setRequests} update={update} />
+              <ContentFilter
+                setRequests={setRequests}
+                update={update}
+                setPage={setPage}
+              />
             </>
           ) : (
             <></>

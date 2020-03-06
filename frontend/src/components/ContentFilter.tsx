@@ -9,6 +9,8 @@ import {
 import { makeStyles } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 
+import { Request } from "./Content";
+
 const useStyles = makeStyles(theme => ({
   searchBox: {},
   inputLabel: {
@@ -17,13 +19,15 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface Props {
-  setRequests: React.Dispatch<React.SetStateAction<any[]>>;
+  setRequests: React.Dispatch<React.SetStateAction<Request[]>>;
   update: boolean;
+  setPage: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export const ContentFilter: FunctionComponent<Props> = ({
   setRequests,
-  update
+  update,
+  setPage
 }) => {
   const classes = useStyles();
   const [searchTerm, setSearchTerm] = useState("");
@@ -55,9 +59,9 @@ export const ContentFilter: FunctionComponent<Props> = ({
         edited = true;
       }
 
-      console.log(url);
       const response = await axios.get(url);
 
+      setPage(0);
       setRequests(response.data);
     })();
   }, [searchTerm, requestType, priority, status, update]);
