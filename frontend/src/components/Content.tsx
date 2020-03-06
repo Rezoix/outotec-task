@@ -30,7 +30,7 @@ import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import { ContentFilter } from "./ContentFilter";
 import { NewRequest } from "./NewRequest";
 
-const drawerWidth = "18%";
+const drawerWidth = "12%";
 const rowsPerPage = 10;
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(1, 1, 1, 1)
     },
     drawerToggle: {
-      margin: theme.spacing(8, 0, 0, 0),
+      margin: theme.spacing(10, 0, 0, 0),
       alignSelf: "flex-end"
     },
     content: {
@@ -69,13 +69,16 @@ const useStyles = makeStyles((theme: Theme) =>
       fontWeight: 500,
       padding: theme.spacing(1, 1, 1, 1)
     },
-    contentSub: {},
+    contentSub: {
+      fontWeight: 500
+    },
     newServiceButton: {
       margin: theme.spacing(1, 1, 1, 1),
-      alignSelf: "flex-end"
+      alignSelf: "flex-end",
+      fontWeight: 600
     },
     table: {
-      width: "82%"
+      width: "88%"
     },
     tableShift: {
       width: "96%"
@@ -184,12 +187,6 @@ export const Content: FunctionComponent = () => {
           [classes.drawerOpen]: drawerOpen,
           [classes.drawerClosed]: !drawerOpen
         })}
-        classes={{
-          paper: clsx({
-            [classes.drawerOpen]: drawerOpen,
-            [classes.drawerClosed]: !drawerOpen
-          })
-        }}
       >
         <Grid container direction="column" className={classes.drawerContent}>
           <IconButton
@@ -268,7 +265,9 @@ export const Content: FunctionComponent = () => {
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((request: Request) => (
                   <TableRow key={request.id}>
-                    <TableCell>{request.created}</TableCell>
+                    <TableCell>
+                      {new Date(request.created).toLocaleString("en-GB")}
+                    </TableCell>
                     <TableCell>{request.name}</TableCell>
                     <TableCell>{request.type}</TableCell>
                     <TableCell>{request.id}</TableCell>

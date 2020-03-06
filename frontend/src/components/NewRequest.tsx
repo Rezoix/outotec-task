@@ -35,7 +35,10 @@ const useStyles = makeStyles(theme => ({
   bottomContainer: {
     padding: theme.spacing(1, 2, 1, 2)
   },
-  alert: {}
+  button: {
+    fontWeight: 600,
+    margin: theme.spacing(0, 1, 0, 1)
+  }
 }));
 
 type PayloadObject = {
@@ -221,10 +224,19 @@ export const NewRequest: FunctionComponent<Props> = ({
           justify="flex-end"
           className={classes.bottomContainer}
         >
-          <Button color="secondary" onClick={handleClose}>
+          <Button
+            color="secondary"
+            onClick={handleClose}
+            className={classes.button}
+          >
             Cancel
           </Button>
-          <Button color="secondary" variant="contained" onClick={handleSend}>
+          <Button
+            color="secondary"
+            variant="contained"
+            onClick={handleSend}
+            className={classes.button}
+          >
             Send
           </Button>
         </Grid>

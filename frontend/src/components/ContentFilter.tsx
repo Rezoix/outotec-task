@@ -12,7 +12,6 @@ import SearchIcon from "@material-ui/icons/Search";
 import { Request } from "./Content";
 
 const useStyles = makeStyles(theme => ({
-  searchBox: {},
   inputLabel: {
     margin: theme.spacing(2, 0, 1, 0)
   }
@@ -34,6 +33,7 @@ export const ContentFilter: FunctionComponent<Props> = ({
   const [requestType, setRequestType] = useState("any");
   const [priority, setPriority] = useState("any");
   const [status, setStatus] = useState("any");
+  const [lastUrl, setUrl] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -61,7 +61,9 @@ export const ContentFilter: FunctionComponent<Props> = ({
 
       const response = await axios.get(url);
 
-      setPage(0);
+      if (url !== lastUrl) setPage(0);
+
+      setUrl(url);
       setRequests(response.data);
     })();
   }, [searchTerm, requestType, priority, status, update]);
@@ -69,7 +71,6 @@ export const ContentFilter: FunctionComponent<Props> = ({
   return (
     <>
       <TextField
-        className={classes.searchBox}
         placeholder="Search"
         variant="outlined"
         color="secondary"
