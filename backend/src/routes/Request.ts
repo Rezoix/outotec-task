@@ -145,8 +145,14 @@ const searchRequests: Hapi.ServerRoute = {
   handler: (request: Hapi.Request, h: Hapi.ResponseToolkit) => {
     const searchTerm = request.query.term;
     const requestType = request.query.type;
+    const priority = request.query.priority;
+    const status = request.query.status;
 
-    console.log(requestType);
+    /* console.log("Search term: " + searchTerm);
+    console.log("Type: " + requestType);
+    console.log("Priority: " + priority);
+    console.log("Status: " + status);
+    console.log("--------------------"); */
 
     let response = testData;
 
@@ -168,7 +174,39 @@ const searchRequests: Hapi.ServerRoute = {
       });
     }
 
+    if (typeof priority === "string") {
+      response = response.filter((request: Request) => {
+        return request.priority.toLowerCase() === priority.toLowerCase();
+      });
+    }
+
+    if (typeof status === "string") {
+      response = response.filter((request: Request) => {
+        return request.status.toLowerCase() === status.toLowerCase();
+      });
+    }
+
     return response;
+  }
+};
+
+type PayloadObject = {
+  name: string;
+  type: string;
+  id: string;
+  description: string;
+  priority: string;
+};
+
+const addRequest: Hapi.ServerRoute = {
+  method: "PUT",
+  path: "/requests/new",
+  handler: (request: Hapi.Request, h: Hapi.ResponseToolkit) => {
+    const payload = <PayloadObject>request.params;
+
+    console.log(payload);
+
+    return h.response().code(200);
   }
 };
 
