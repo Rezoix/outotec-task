@@ -40,17 +40,13 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const App: FunctionComponent = () => {
   const classes = useStyles();
-  const [value, setValue] = React.useState("index");
-
-  const handleChange = (event: any, newValue: any) => {
-    setValue(newValue);
-  };
 
   return (
     <div className={classes.root}>
       <AppBar position="static" className={classes.appBar}>
         <Toolbar>
-          <img className={classes.logoIcon} src={logo} />
+          <img className={classes.logoIcon} src={logo} alt="logo" />
+
           <Typography variant="h5" className={classes.title}>
             Service Center
           </Typography>
