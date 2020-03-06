@@ -4,7 +4,7 @@ import { searchRequests } from "./routes/Request";
 const init = async () => {
   const server = new Hapi.Server({
     port: 3001,
-    host: "0.0.0.0",
+    host: "localhost",
     routes: {
       cors: true
     }
