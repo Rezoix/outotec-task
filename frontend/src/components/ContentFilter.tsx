@@ -18,9 +18,13 @@ const useStyles = makeStyles(theme => ({
 
 interface Props {
   setRequests: React.Dispatch<React.SetStateAction<any[]>>;
+  update: boolean;
 }
 
-export const ContentFilter: FunctionComponent<Props> = ({ setRequests }) => {
+export const ContentFilter: FunctionComponent<Props> = ({
+  setRequests,
+  update
+}) => {
   const classes = useStyles();
   const [searchTerm, setSearchTerm] = useState("");
   const [requestType, setRequestType] = useState("any");
@@ -56,7 +60,7 @@ export const ContentFilter: FunctionComponent<Props> = ({ setRequests }) => {
 
       setRequests(response.data);
     })();
-  }, [searchTerm, requestType, priority, status]);
+  }, [searchTerm, requestType, priority, status, update]);
 
   return (
     <>
@@ -89,9 +93,9 @@ export const ContentFilter: FunctionComponent<Props> = ({ setRequests }) => {
         }}
       >
         <option value="any">Any</option>
-        <option value="audit">Audit</option>
-        <option value="maintenance">Maintenance</option>
-        <option value="break/fix repair">Break/Fix Repair</option>
+        <option value="Audit">Audit</option>
+        <option value="Maintenance">Maintenance</option>
+        <option value="Break/Fix Repair">Break/Fix Repair</option>
       </Select>
       <InputLabel className={classes.inputLabel}>Priority</InputLabel>
       <Select
@@ -106,9 +110,9 @@ export const ContentFilter: FunctionComponent<Props> = ({ setRequests }) => {
         }}
       >
         <option value="any">Any</option>
-        <option value="high">High</option>
-        <option value="medium">Medium</option>
-        <option value="low">Low</option>
+        <option value="High">High</option>
+        <option value="Medium">Medium</option>
+        <option value="Low">Low</option>
       </Select>
       <InputLabel className={classes.inputLabel}>Status</InputLabel>
       <Select
@@ -123,8 +127,8 @@ export const ContentFilter: FunctionComponent<Props> = ({ setRequests }) => {
         }}
       >
         <option value="any">Any</option>
-        <option value="open">Open</option>
-        <option value="closed">Closed</option>
+        <option value="Open">Open</option>
+        <option value="Closed">Closed</option>
       </Select>
     </>
   );
