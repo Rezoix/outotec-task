@@ -10,7 +10,7 @@ type Request = {
   status: string;
 };
 
-const testData: Request[] = [
+let testData: Request[] = [
   {
     created: new Date(600000000000),
     name: "Lorem ipsum",
@@ -18,7 +18,7 @@ const testData: Request[] = [
     id: "12312356345",
     description: "Audit equipment",
     priority: "High",
-    status: "open"
+    status: "Open"
   },
   {
     created: new Date(650000000000),
@@ -27,7 +27,7 @@ const testData: Request[] = [
     id: "12312356346",
     description: "Audit equipment",
     priority: "High",
-    status: "open"
+    status: "Open"
   },
   {
     created: new Date(620500000000),
@@ -36,7 +36,7 @@ const testData: Request[] = [
     id: "12312353345",
     description: "Audit equipment",
     priority: "High",
-    status: "open"
+    status: "Open"
   },
   {
     created: new Date(610000000000),
@@ -45,7 +45,7 @@ const testData: Request[] = [
     id: "12312356745",
     description: "Audit equipment",
     priority: "High",
-    status: "open"
+    status: "Open"
   },
   {
     created: new Date(600500000000),
@@ -54,7 +54,7 @@ const testData: Request[] = [
     id: "12312256345",
     description: "Audit equipment",
     priority: "High",
-    status: "open"
+    status: "Open"
   },
   {
     created: new Date(603000000000),
@@ -63,7 +63,7 @@ const testData: Request[] = [
     id: "12212356345",
     description: "Audit equipment",
     priority: "High",
-    status: "open"
+    status: "Open"
   },
   {
     created: new Date(600005000000),
@@ -72,7 +72,7 @@ const testData: Request[] = [
     id: "12312356344",
     description: "Audit equipment",
     priority: "High",
-    status: "open"
+    status: "Open"
   },
   {
     created: new Date(600000000000),
@@ -81,7 +81,7 @@ const testData: Request[] = [
     id: "12312354344",
     description: "Planned maintenance",
     priority: "High",
-    status: "open"
+    status: "Open"
   },
   {
     created: new Date(650000000000),
@@ -90,7 +90,7 @@ const testData: Request[] = [
     id: "12312354349",
     description: "Planned maintenance",
     priority: "High",
-    status: "open"
+    status: "Open"
   },
   {
     created: new Date(620500000000),
@@ -99,7 +99,7 @@ const testData: Request[] = [
     id: "12312356340",
     description: "Planned maintenance",
     priority: "High",
-    status: "open"
+    status: "Open"
   },
   {
     created: new Date(610000000000),
@@ -108,7 +108,7 @@ const testData: Request[] = [
     id: "12312350345",
     description: "Planned maintenance",
     priority: "High",
-    status: "open"
+    status: "Open"
   },
   {
     created: new Date(600500000000),
@@ -117,7 +117,7 @@ const testData: Request[] = [
     id: "12312356305",
     description: "Planned maintenance",
     priority: "High",
-    status: "open"
+    status: "Open"
   },
   {
     created: new Date(603000000000),
@@ -126,7 +126,7 @@ const testData: Request[] = [
     id: "12302356345",
     description: "Planned maintenance",
     priority: "High",
-    status: "open"
+    status: "Open"
   },
   {
     created: new Date(600005000000),
@@ -135,7 +135,7 @@ const testData: Request[] = [
     id: "12312396340",
     description: "Planned maintenance",
     priority: "High",
-    status: "open"
+    status: "Open"
   }
 ];
 
@@ -202,12 +202,27 @@ const addRequest: Hapi.ServerRoute = {
   method: "PUT",
   path: "/requests/new",
   handler: (request: Hapi.Request, h: Hapi.ResponseToolkit) => {
-    const payload = <PayloadObject>request.params;
+    const payload = <PayloadObject>request.payload;
 
     console.log(payload);
+
+    const newRequest: Request = {
+      created: new Date(),
+      name: payload.name,
+      type: payload.type,
+      id: payload.id,
+      description: payload.description,
+      priority: payload.priority,
+      status: "Open"
+    };
+
+    console.log(newRequest);
+    console.log(testData.length);
+    testData = [...testData, newRequest];
+    console.log(testData.length);
 
     return h.response().code(200);
   }
 };
 
-export { searchRequests };
+export { searchRequests, addRequest };

@@ -1,5 +1,5 @@
 const Hapi = require("@hapi/hapi");
-import { searchRequests } from "./routes/Request";
+import { searchRequests, addRequest } from "./routes/Request";
 
 const init = async () => {
   const server = new Hapi.Server({
@@ -11,6 +11,7 @@ const init = async () => {
   });
 
   server.route([searchRequests]);
+  server.route([addRequest]);
 
   await server.start();
   console.log("Server running on %s", server.info.uri);
