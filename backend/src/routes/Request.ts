@@ -148,12 +148,6 @@ const searchRequests: Hapi.ServerRoute = {
     const priority = request.query.priority;
     const status = request.query.status;
 
-    /* console.log("Search term: " + searchTerm);
-    console.log("Type: " + requestType);
-    console.log("Priority: " + priority);
-    console.log("Status: " + status);
-    console.log("--------------------"); */
-
     let response = testData;
 
     if (typeof searchTerm === "string") {
@@ -204,8 +198,6 @@ const addRequest: Hapi.ServerRoute = {
   handler: (request: Hapi.Request, h: Hapi.ResponseToolkit) => {
     const payload = <PayloadObject>request.payload;
 
-    console.log(payload);
-
     const newRequest: Request = {
       created: new Date(),
       name: payload.name,
@@ -216,10 +208,7 @@ const addRequest: Hapi.ServerRoute = {
       status: "Open"
     };
 
-    console.log(newRequest);
-    console.log(testData.length);
     testData = [...testData, newRequest];
-    console.log(testData.length);
 
     return h.response().code(200);
   }

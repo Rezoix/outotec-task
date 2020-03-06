@@ -99,8 +99,6 @@ export const NewRequest: FunctionComponent<Props> = ({
       return;
     }
 
-    console.log(payload);
-
     axios.put(url, payload).catch(e => {
       console.log("Error: Failed to create new request");
       console.log(e);
