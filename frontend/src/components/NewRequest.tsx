@@ -10,8 +10,10 @@ import {
   FormControl,
   FormHelperText,
   Divider,
-  Button
+  Button,
+  Snackbar
 } from "@material-ui/core";
+import { Alert } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
@@ -32,7 +34,8 @@ const useStyles = makeStyles(theme => ({
   },
   bottomContainer: {
     padding: theme.spacing(1, 2, 1, 2)
-  }
+  },
+  alert: {}
 }));
 
 type PayloadObject = {
@@ -46,15 +49,24 @@ type PayloadObject = {
 interface Props {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  update: boolean;
+  setUpdate: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const NewRequest: FunctionComponent<Props> = ({ open, setOpen }) => {
+export const NewRequest: FunctionComponent<Props> = ({
+  open,
+  setOpen,
+  update,
+  setUpdate
+}) => {
   const classes = useStyles();
   const [name, setName] = useState("");
   const [requestType, setRequestType] = useState("any");
   const [priority, setPriority] = useState("any");
   const [id, setId] = useState("");
   const [description, setDescription] = useState("");
+  const [sendPressed, setSendPressed] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const handleClose = () => {
     setName("");
@@ -62,6 +74,7 @@ export const NewRequest: FunctionComponent<Props> = ({ open, setOpen }) => {
     setPriority("any");
     setId("");
     setDescription("");
+    setSendPressed(false);
     setOpen(false);
   };
 
@@ -72,15 +85,47 @@ export const NewRequest: FunctionComponent<Props> = ({ open, setOpen }) => {
       name: name,
       type: requestType,
       id: id,
-      description: description,
+      description: description.length === 0 ? "" : description,
       priority: priority
     };
 
-    axios.put(url, payload);
+    if (
+      payload.name.length === 0 ||
+      payload.type === "any" ||
+      payload.id.length === 0 ||
+      payload.priority === "any"
+    ) {
+      setSendPressed(true);
+      return;
+    }
+
+    console.log(payload);
+
+    axios.put(url, payload).catch(e => {
+      console.log("Error: Failed to create new request");
+      console.log(e);
+      return;
+    });
+    setUpdate(!update);
+    setSnackbarOpen(true);
+    handleClose();
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   return (
     <>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={2000}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        onClose={handleSnackbarClose}
+        onClick={handleSnackbarClose}
+      >
+        <Alert severity="success">Request created successfully</Alert>
+      </Snackbar>
       <Drawer
         open={open}
         anchor="right"
@@ -93,12 +138,12 @@ export const NewRequest: FunctionComponent<Props> = ({ open, setOpen }) => {
           </Typography>
 
           <InputLabel className={classes.inputLabel}>Request name</InputLabel>
-          <FormControl required error>
+          <FormControl required error={name.length === 0 && sendPressed}>
             <TextField
               placeholder="Request name"
               variant="outlined"
               color="secondary"
-              error
+              error={name.length === 0 && sendPressed}
               value={name}
               onChange={event => setName(event.target.value)}
             />
@@ -106,7 +151,7 @@ export const NewRequest: FunctionComponent<Props> = ({ open, setOpen }) => {
           </FormControl>
 
           <InputLabel className={classes.inputLabel}>Request types</InputLabel>
-          <FormControl required error>
+          <FormControl required error={requestType === "any" && sendPressed}>
             <Select
               native
               variant="outlined"
@@ -119,20 +164,20 @@ export const NewRequest: FunctionComponent<Props> = ({ open, setOpen }) => {
               }}
             >
               <option value="any">Select</option>
-              <option value="audit">Audit</option>
-              <option value="maintenance">Maintenance</option>
-              <option value="break/fix repair">Break/Fix Repair</option>
+              <option value="Audit">Audit</option>
+              <option value="Maintenance">Maintenance</option>
+              <option value="Break/Fix Repair">Break/Fix Repair</option>
             </Select>
             <FormHelperText>Required</FormHelperText>
           </FormControl>
 
           <InputLabel className={classes.inputLabel}>ID</InputLabel>
-          <FormControl required error>
+          <FormControl required error={id.length === 0 && sendPressed}>
             <TextField
               placeholder="ID"
               variant="outlined"
               color="secondary"
-              error
+              error={id.length === 0 && sendPressed}
               value={id}
               onChange={event => setId(event.target.value)}
             />
@@ -151,7 +196,7 @@ export const NewRequest: FunctionComponent<Props> = ({ open, setOpen }) => {
           </FormControl>
 
           <InputLabel className={classes.inputLabel}>Priority</InputLabel>
-          <FormControl required error>
+          <FormControl required error={priority === "any" && sendPressed}>
             <Select
               native
               variant="outlined"
@@ -164,9 +209,9 @@ export const NewRequest: FunctionComponent<Props> = ({ open, setOpen }) => {
               }}
             >
               <option value="any">Select</option>
-              <option value="high">High</option>
-              <option value="medium">Medium</option>
-              <option value="low">Low</option>
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
             </Select>
             <FormHelperText>Required</FormHelperText>
           </FormControl>
